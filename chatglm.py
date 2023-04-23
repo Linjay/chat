@@ -35,6 +35,7 @@ def event():
                 len(chat_holder[conversation_id]['history']))}}
         url = 'https://oapi.dingtalk.com/robot/send?access_token=' + chat_holder[conversation_id]['dingToken']
         requests.post(url, headers=headers2, json=json_bot_msg)
+        return "done"
     if content.startswith(' bind:'):
         token = content.split(":", 1)[1]
         chat_holder[conversation_id] = {
@@ -49,6 +50,7 @@ def event():
                 len(chat_holder[conversation_id]['history']))}}
         url = 'https://oapi.dingtalk.com/robot/send?access_token=' + chat_holder[conversation_id]['dingToken']
         requests.post(url, headers=headers2, json=json_bot_msg)
+        return "done"
     elif conversation_id not in chat_holder.keys():
         print("invalid conversation:" + conversation_id)
         headers2 = {'Content-Type': 'application/json'}
@@ -91,6 +93,8 @@ def event():
 
         if len(chat_holder[conversation_id]['history']) > 50:
             chat_holder[conversation_id]['history'] = []
+        return "done"
+
     return 'conversation这只是一个回复'
 
 if __name__ == '__main__':
