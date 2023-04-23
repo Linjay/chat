@@ -11,25 +11,7 @@ s.verify = False
 urllib3.disable_warnings()
 app = Flask(__name__)
 
-chat_holder = {
-    "cid5Jo6E9HFyq9h53OKZLga0Q==": {
-        "history": [],
-        "dingToken": "6aa3cf223f652ff19d48518f9fdd7f7970def822e19a4f30557c6d05d75fbe16"
-    },
-    "cidbRFEZ6AtbzXd/9vjVZpLFw==": {
-        "history": [],
-        "dingToken": "0551bff6504ccab407014fc4d8a84c6e8657609f17668fce2c05e2828a903122"
-    },
-    "cid3woGpG5a4GbH/U88zZVH+w==": {
-        "history": [],
-        "dingToken": "6d796eac1cb8ee7affe06743871a2157c48251149236fa97d53cea2c95787a84"
-    },
-    "cid8JjMaf/ULHoPeXK/98cTaw==": {
-        "history": [],
-        "dingToken": "70caf994a77d482e6842a549ff941cda3b17433636923cbb9feee19a4910d8c1"
-    }
-}
-
+chat_holder = {}
 
 @app.route("/")
 def hi():
@@ -60,7 +42,7 @@ def event():
             "dingToken": token
         }
         with open("chatglm.ini", 'w') as f:  # 如果filename不存在会自动创建， 'w'表示写数据，写之前会清空文件中的原有数据！
-            f.write(json.loads(chat_holder))
+            f.write(json.dumps(chat_holder,indent=2))
         headers2 = {'Content-Type': 'application/json'}
         json_bot_msg = {"msgtype": "text", "text": {
             "content": asker + "你好!\r\nconversation_id:" + conversation_id + "已绑定token:"+token+"\r\nconversation:" + str(
@@ -117,14 +99,8 @@ if __name__ == '__main__':
         print(contents)  # 输出时在最后会多出一行（read()函数到达文件末会返回一个空字符，显示出空字符就是一个空行）
         print('------------')
 
-        # check data type with type() method
-        print(type(contents))
-
         # convert string to  object
         chat_holder = json.loads(contents)
-
-        # check new data type
-        print(type(chat_holder))
 
     print("program loading")
     app.run(host='0.0.0.0', port=18888, debug=True)
