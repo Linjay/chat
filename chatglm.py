@@ -24,6 +24,10 @@ chat_holder = {
         "history": [],
         "dingToken": "6d796eac1cb8ee7affe06743871a2157c48251149236fa97d53cea2c95787a84"
     },
+    "cid8JjMaf/ULHoPeXK/98cTaw==": {
+        "history": [],
+        "dingToken": "70caf994a77d482e6842a549ff941cda3b17433636923cbb9feee19a4910d8c1"
+    }
 }
 
 
@@ -40,43 +44,58 @@ def event():
     print(json_data)
     asker = json_data['senderNick']
     conversation_id = json_data['conversationId']
-    if conversation_id not in chat_holder.keys():
-        print("invalid conversation:" + conversation_id)
-    json_message = {
-        "history": chat_holder[conversation_id]['history'],
-        "prompt": json_data['text']['content'],
-        "max_length": 20480
-    }
-    print("send message to gpt")
-    print(json_message)
-
-    answer = ""
-    try:
-        chatgpt_response = requests.post('http://192.168.50.185:8000', headers=headers, json=json_message, proxies={})
-        print("chatgpt_response:")
-        print(chatgpt_response.json())
-        answer = chatgpt_response.json()['response']
-        chat_holder[conversation_id]['history'] = chatgpt_response.json()['history']
-
-        print("----" * 20)
-        print(answer)
-        print("----" * 20)
-    except:
-        answer += "我好像找不到我的模型了。。。呜呜呜，请联系我的主人帮我开下机，谢谢！"
-        print("An exception occurred")
-
-    headers2 = {'Content-Type': 'application/json'}
-    json_bot_msg = {"msgtype": "text", "text": {
-        "content": asker + "你好!\r\n" + answer + '\r\nconversation:' + str(
-            len(chat_holder[conversation_id]['history']))}}
-    url = 'https://oapi.dingtalk.com/robot/send?access_token=' + chat_holder[conversation_id]['dingToken']
-    response = requests.post(url, headers=headers2, json=json_bot_msg)
-    print(response.text)
-
-    if len(chat_holder[conversation_id]['history']) > 50:
+    content = json_data['text']['content']
+    if content == " clear":
         chat_holder[conversation_id]['history'] = []
-    return 'conversation这只是一个回复'
+        headers2 = {'Content-Type': 'application/json'}
+        json_bot_msg = {"msgtype": "text", "text": {
+            "content": asker + "你好!\r\n对话清理成功\r\nconversation:" + str(
+                len(chat_holder[conversation_id]['history']))}}
+        url = 'https://oapi.dingtalk.com/robot/send?access_token=' + chat_holder[conversation_id]['dingToken']
+        requests.post(url, headers=headers2, json=json_bot_msg)
+    elif conversation_id not in chat_holder.keys():
+        print("invalid conversation:" + conversation_id)
+        headers2 = {'Content-Type': 'application/json'}
+        json_bot_msg = {"msgtype": "text", "text": {
+            "content": asker + "你好!\r\nconversation_id:"+conversation_id+",会话未初始化\r\nconversation:" + str(
+                len(chat_holder[conversation_id]['history']))}}
+        url = 'https://oapi.dingtalk.com/robot/send?access_token=' + chat_holder[conversation_id]['dingToken']
+        requests.post(url, headers=headers2, json=json_bot_msg)
+    else:
+        json_message = {
+            "history": chat_holder[conversation_id]['history'],
+            "prompt": content,
+            "max_length": 20480
+        }
+        print("send message to gpt")
+        print(json_message)
 
+        answer = ""
+        try:
+            chatgpt_response = requests.post('http://192.168.50.185:8000', headers=headers, json=json_message, proxies={})
+            print("chatgpt_response:")
+            print(chatgpt_response.json())
+            answer = chatgpt_response.json()['response']
+            chat_holder[conversation_id]['history'] = chatgpt_response.json()['history']
+
+            print("----" * 20)
+            print(answer)
+            print("----" * 20)
+        except:
+            answer += "我好像找不到我的模型了。。。呜呜呜，请联系我的主人帮我开下机，谢谢！"
+            print("An exception occurred")
+
+        headers2 = {'Content-Type': 'application/json'}
+        json_bot_msg = {"msgtype": "text", "text": {
+            "content": asker + "你好!\r\n" + answer + '\r\nconversation:' + str(
+                len(chat_holder[conversation_id]['history']))}}
+        url = 'https://oapi.dingtalk.com/robot/send?access_token=' + chat_holder[conversation_id]['dingToken']
+        response = requests.post(url, headers=headers2, json=json_bot_msg)
+        print(response.text)
+
+        if len(chat_holder[conversation_id]['history']) > 50:
+            chat_holder[conversation_id]['history'] = []
+    return 'conversation这只是一个回复'
 
 if __name__ == '__main__':
     print("program loading")
