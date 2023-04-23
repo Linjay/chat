@@ -1,6 +1,7 @@
 # chat
 
-钉钉机器人outing
+
+添加群自定义机器人，钉钉机器人的outing设置为：
 
 
 ```http://linjay.asuscomm.com:18888/webhook/event```
