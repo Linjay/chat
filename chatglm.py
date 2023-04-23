@@ -53,6 +53,20 @@ def event():
                 len(chat_holder[conversation_id]['history']))}}
         url = 'https://oapi.dingtalk.com/robot/send?access_token=' + chat_holder[conversation_id]['dingToken']
         requests.post(url, headers=headers2, json=json_bot_msg)
+    if content.startswith(' bind:'):
+        token = content.split(":", 1)[1]
+        chat_holder[conversation_id] = {
+            "history": [],
+            "dingToken": token
+        }
+        with open("chatglm.ini", 'w') as f:  # 如果filename不存在会自动创建， 'w'表示写数据，写之前会清空文件中的原有数据！
+            f.write(json.loads(chat_holder))
+        headers2 = {'Content-Type': 'application/json'}
+        json_bot_msg = {"msgtype": "text", "text": {
+            "content": asker + "你好!\r\nconversation_id:" + conversation_id + "已绑定token:"+token+"\r\nconversation:" + str(
+                len(chat_holder[conversation_id]['history']))}}
+        url = 'https://oapi.dingtalk.com/robot/send?access_token=' + chat_holder[conversation_id]['dingToken']
+        requests.post(url, headers=headers2, json=json_bot_msg)
     elif conversation_id not in chat_holder.keys():
         print("invalid conversation:" + conversation_id)
         headers2 = {'Content-Type': 'application/json'}
@@ -98,6 +112,20 @@ def event():
     return 'conversation这只是一个回复'
 
 if __name__ == '__main__':
+    with open('chatglm.ini') as f:  # 默认模式为‘r’，只读模式
+        contents = f.read()  # 读取文件全部内容
+        print(contents)  # 输出时在最后会多出一行（read()函数到达文件末会返回一个空字符，显示出空字符就是一个空行）
+        print('------------')
+
+        # check data type with type() method
+        print(type(contents))
+
+        # convert string to  object
+        chat_holder = json.loads(contents)
+
+        # check new data type
+        print(type(chat_holder))
+
     print("program loading")
     app.run(host='0.0.0.0', port=18888, debug=True)
     print("program exit()")
