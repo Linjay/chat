@@ -15,9 +15,22 @@
 
 <img width="679" alt="image" src="https://user-images.githubusercontent.com/4114248/233837892-48d1923c-31e2-4a6d-8849-7f3432bc73db.png">
 
+绑定后的结果写入```chatglm.ini```
+
 
 清理对话
 
 ```@robot clear```
 
 <img width="567" alt="image" src="https://user-images.githubusercontent.com/4114248/233837900-3ce48790-9a1f-4942-95a9-1583a4d24e74.png">
+
+启动
+```
+chmod +x start.sh
+./start.sh
+```
+
+日志
+```
+tail -300f chatglm.log
+```
