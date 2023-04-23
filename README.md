@@ -30,6 +30,13 @@ chmod +x start.sh
 ./start.sh
 ```
 
+## 关闭
+
+```
+ps -aux | grep chatglm.py
+kill -9 xxx
+```
+
 ## 日志
 ```
 tail -300f chatglm.log
