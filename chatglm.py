@@ -85,9 +85,9 @@ def event():
             logging.warning("----" * 20)
             logging.warning(answer)
             logging.warning("----" * 20)
-        except:
-            answer += "我好像找不到我的模型了。。。呜呜呜，请联系我的主人帮我开下机，谢谢！"
-            logging.warning("An exception occurred")
+        except Exception as ex:
+            answer += "哎呀，崩溃啦。。。呜呜呜，请联系我的主人吧！" + str(ex)
+            logging.warning("An exception occurred", ex)
 
         send_msg(conversation_id, asker, "" + answer)
 
