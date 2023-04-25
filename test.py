@@ -1,24 +1,25 @@
-import json
+# 创建一个flash app 程序
 
-chat_holder = {}
+# 导入Flask类
+import flask
+
+# 创建一个Flask类的实例
+app = flask.Flask(__name__)
+
+@app.route('/')
+def hello_world():
+    return 'Hello World!'
+
+@app.route('/hello', methods=['GET'])
+def hello():
+    name = "aaa"
+    #  获取请求参数
+    name = flask.request.args.get('name')
+    return 'Hello!' + name
+
+# 对一个字符串列表进行首字母排序
+def sort_list(string_list):
+    return sorted(string_list)
 
 if __name__ == '__main__':
-    with open('chatglm.ini') as f:  # 默认模式为‘r’，只读模式
-        contents = f.read()  # 读取文件全部内容
-        print(contents)  # 输出时在最后会多出一行（read()函数到达文件末会返回一个空字符，显示出空字符就是一个空行）
-        print('------------')
-
-        # check data type with type() method
-        print(type(contents))
-
-        # convert string to  object
-
-        chat_holder = json.loads(contents)
-
-        # check new data type
-        print(type(chat_holder))
-
-
-    print('2------------')
-    str = json.dumps(chat_holder)
-    print(str)
+    app.run("0.0.0.0", 5000)
