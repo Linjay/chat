@@ -94,7 +94,7 @@ def event():
             answer += "我好像找不到我的模型了。。。呜呜呜，请联系我的主人帮我开下机，谢谢！"
             logging.warning("An exception occurred")
 
-        send_msg(conversation_id, asker + "你好!\r\n" + answer + '\r\nconversation:' + str(len(chat_holder[conversation_id]['history'])))
+        send_msg(conversation_id, asker + "你好!\r\n" + answer + "\r\nconversation:" + str(len(chat_holder[conversation_id]['history'])))
 
         if len(chat_holder[conversation_id]['history']) > 50:
             chat_holder[conversation_id]['history'] = []
