@@ -50,8 +50,7 @@ def event():
     content = json_data['text']['content']
     if content == " clear":
         chat_holder[conversation_id]['history'] = []
-        send_msg(conversation_id,
-                 asker + " 你好!\r\n对话清理成功\r\nconversation:" + str(len(chat_holder[conversation_id]['history'])))
+        send_msg(conversation_id, asker, "对话清理成功")
     elif content.startswith(' bind:'):
         token = content.split(":", 1)[1]
         chat_holder[conversation_id] = {
@@ -60,13 +59,9 @@ def event():
         }
         with open(config_path, 'w') as f:  # 如果filename不存在会自动创建， 'w'表示写数据，写之前会清空文件中的原有数据！
             f.write(json.dumps(chat_holder, indent=2))
-        send_msg(conversation_id,
-                 asker + " 你好!\r\nconversation_id:" + conversation_id + "\r已绑定token:" + token + "\r\nconversation:" + str(
-                     len(chat_holder[conversation_id]['history'])))
+        send_msg(conversation_id, asker, "conversation_id:" + conversation_id + "\r已绑定token:" + token)
     elif conversation_id not in chat_holder.keys():
-        send_msg(conversation_id,
-                 asker + " 你好!\r\nconversation_id:" + conversation_id + ",会话未初始化\r\nconversation:" + str(
-                     len(chat_holder[conversation_id]['history'])))
+        send_msg(conversation_id, asker, "conversation_id:" + conversation_id + ",会话未初始化")
     else:
         json_message = {
             "history": chat_holder[conversation_id]['history'],
@@ -94,7 +89,7 @@ def event():
             answer += "我好像找不到我的模型了。。。呜呜呜，请联系我的主人帮我开下机，谢谢！"
             logging.warning("An exception occurred")
 
-        send_msg(conversation_id, asker + " 你好!\r\n" + answer + "\r\nconversation:" + str(len(chat_holder[conversation_id]['history'])))
+        send_msg(conversation_id, asker, "" + answer)
 
         if len(chat_holder[conversation_id]['history']) > 50:
             chat_holder[conversation_id]['history'] = []
@@ -102,7 +97,7 @@ def event():
     return 'conversation:done'
 
 
-def send_msg(conversation_id, msg):
+def send_msg(conversation_id, asker, msg):
 
     global chat_holder
     logging.warning("----" * 20)
@@ -110,7 +105,7 @@ def send_msg(conversation_id, msg):
     logging.warning("----" * 20)
 
     headers_ding = {'Content-Type': 'application/json'}
-    json_bot_msg = {"msgtype": "text", "text": {"content": msg}}
+    json_bot_msg = {"msgtype": "text", "text": {"content": asker + " 你好!\r\n" + msg + "\r\nconversation:" + str(len(chat_holder[conversation_id]['history']))}}
     url = 'https://oapi.dingtalk.com/robot/send?access_token=' + chat_holder[conversation_id]['dingToken']
 
     response = requests.post(url, headers=headers_ding, json=json_bot_msg)
