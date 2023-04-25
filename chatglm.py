@@ -105,7 +105,9 @@ def event():
 def send_msg(conversation_id, msg):
 
     global chat_holder
-    logging.warning("send msg to " + conversation_id + ", msg:" + msg)
+    logging.warning("----" * 20)
+    logging.warning("send msg to " + conversation_id + ", msg:\r\n" + msg)
+    logging.warning("----" * 20)
 
     headers_ding = {'Content-Type': 'application/json'}
     json_bot_msg = {"msgtype": "text", "text": {"content": msg}}
