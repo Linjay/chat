@@ -48,10 +48,10 @@ def event():
     asker = json_data['senderNick']
     conversation_id = json_data['conversationId']
     content = json_data['text']['content']
-    if content == " clear":
+    if content == " clear":  # clear
         chat_holder[conversation_id]['history'] = []
         send_msg(conversation_id, asker, "对话清理成功")
-    elif content.startswith(' bind:'):
+    elif content.startswith(' bind:'):  # bind:token
         token = content.split(":", 1)[1]
         chat_holder[conversation_id] = {
             "history": [],
@@ -60,9 +60,9 @@ def event():
         with open(config_path, 'w') as f:  # 如果filename不存在会自动创建， 'w'表示写数据，写之前会清空文件中的原有数据！
             f.write(json.dumps(chat_holder, indent=2))
         send_msg(conversation_id, asker, "conversation_id:" + conversation_id + "\r已绑定token:" + token)
-    elif conversation_id not in chat_holder.keys():
+    elif conversation_id not in chat_holder.keys():  # 未初始化
         send_msg(conversation_id, asker, "conversation_id:" + conversation_id + ",会话未初始化")
-    else:
+    else:  # chat with chat-glm
         json_message = {
             "history": chat_holder[conversation_id]['history'],
             "prompt": content,
@@ -98,14 +98,14 @@ def event():
 
 
 def send_msg(conversation_id, asker, msg):
-
     global chat_holder
     logging.warning("----" * 20)
     logging.warning("send msg to " + conversation_id + ", msg:\r\n" + msg)
     logging.warning("----" * 20)
 
     headers_ding = {'Content-Type': 'application/json'}
-    json_bot_msg = {"msgtype": "text", "text": {"content": asker + " 你好!\r\n" + msg + "\r\nconversation:" + str(len(chat_holder[conversation_id]['history']))}}
+    json_bot_msg = {"msgtype": "text", "text": {"content": asker + " 你好!\r\n" + msg + "\r\nconversation:" + str(
+        len(chat_holder[conversation_id]['history']))}}
     url = 'https://oapi.dingtalk.com/robot/send?access_token=' + chat_holder[conversation_id]['dingToken']
 
     response = requests.post(url, headers=headers_ding, json=json_bot_msg)
