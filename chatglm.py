@@ -86,14 +86,15 @@ def event():
             chat_holder[conversation_id]['history'] = chatgpt_response.json()['history']
 
             logging.warning("----" * 20)
+            logging.warning(content)
+            logging.warning("----" * 20)
             logging.warning(answer)
             logging.warning("----" * 20)
         except:
             answer += "我好像找不到我的模型了。。。呜呜呜，请联系我的主人帮我开下机，谢谢！"
             logging.warning("An exception occurred")
 
-        send_msg(conversation_id,
-                 asker + "你好!\r\n" + answer + '\r\nconversation:' + str(len(chat_holder[conversation_id]['history'])))
+        send_msg(conversation_id, asker + "你好!\r\n" + answer + '\r\nconversation:' + str(len(chat_holder[conversation_id]['history'])))
 
         if len(chat_holder[conversation_id]['history']) > 50:
             chat_holder[conversation_id]['history'] = []
@@ -102,11 +103,14 @@ def event():
 
 
 def send_msg(conversation_id, msg):
+
     global chat_holder
+    logging.warning("send msg to " + conversation_id + ", msg:" + msg)
+
     headers_ding = {'Content-Type': 'application/json'}
     json_bot_msg = {"msgtype": "text", "text": {"content": msg}}
     url = 'https://oapi.dingtalk.com/robot/send?access_token=' + chat_holder[conversation_id]['dingToken']
-    logging.warning("send msg to " + conversation_id + ", msg:" + json_bot_msg)
+
     response = requests.post(url, headers=headers_ding, json=json_bot_msg)
     logging.warning(response.text)
 
