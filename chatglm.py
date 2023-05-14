@@ -12,6 +12,13 @@ s.verify = False
 urllib3.disable_warnings()
 app = Flask(__name__)
 
+logger = logging.getLogger()
+fh = logging.FileHandler('chatglm-main.log', encoding='utf-8', mode='a')
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+fh.setFormatter(formatter)
+logger.addHandler(fh)
+logger.setLevel(logging.DEBUG)
+
 headers_ask = {'Content-Type': 'application/json'}
 
 # 全局的会话存储

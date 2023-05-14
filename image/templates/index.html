@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+     <title>AIGC精选图片集</title>
+    <title>Image Server</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .image-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .image-container img {
+            width: 100%;
+            max-width: 200px;
+            height: auto;
+            object-fit: cover;
+            margin: 10px;
+            flex: 1 0 calc(25% - 20px);
+            box-sizing: border-box;
+        }
+
+        .load-more {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>AIGC精选图片集</h1>
+    <div class="image-container" id="imageContainer"></div>
+    <div class="load-more" id="loadMoreContainer">
+        <button onclick="loadMoreImages()">加载更多</button>
+    </div>
+
+    <script>
+        var startIndex = 0; // 起始图片索引
+        var numImages = 20; // 每次加载的图片数量
+
+        function loadImages(start, num) {
+            $.ajax({
+                url: '/get_images',
+                type: 'GET',
+                dataType: 'json',
+                data: {
+                    start: start,
+                    num: num
+                },
+                success: function (data) {
+                    var imageContainer = $('#imageContainer');
+                    data.images.forEach(function (imageName) {
+                        var imageURL = '/image/' + imageName;
+                        var imgElement = $('<img>').attr('src', imageURL);
+                        imageContainer.append(imgElement);
+                    });
+                    if (data.hasMore) {
+                        $('#loadMoreContainer').show();
+                    } else {
+                        $('#loadMoreContainer').hide();
+                    }
+                }
+            });
+        }
+
+        function loadMoreImages() {
+            startIndex += numImages;
+            loadImages(startIndex, numImages);
+        }
+
+        $(document).ready(function () {
+            loadImages(startIndex, numImages);
+        });
+    </script>
+</body>
+</html>
