@@ -80,7 +80,7 @@ def event():
 
         answer = ""
         try:
-            chatgpt_response = requests.post('http://192.168.50.185:8000', headers=headers_ask, json=json_message,
+            chatgpt_response = requests.post('http://192.168.50.30:8000', headers=headers_ask, json=json_message,
                                              proxies={})
             logging.warning("chatgpt_response:")
             logging.warning(chatgpt_response.json())
