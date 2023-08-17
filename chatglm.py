@@ -111,8 +111,12 @@ def send_msg(conversation_id, asker, msg):
     logging.warning("----" * 20)
 
     headers_ding = {'Content-Type': 'application/json'}
-    json_bot_msg = {"msgtype": "text", "text": {"content": asker + " 你好!\r\n" + msg + "\r\n第 " + str(
-        len(chat_holder[conversation_id]['history']))+" 轮对话"}}
+    json_bot_msg = {
+        "msgtype": "text",
+        "text": {
+            "content": asker + " 你好!\r\n" + msg + "\r\n第 " + str(len(chat_holder[conversation_id]['history']))
+        }
+    }
     url = 'https://oapi.dingtalk.com/robot/send?access_token=' + chat_holder[conversation_id]['dingToken']
 
     response = requests.post(url, headers=headers_ding, json=json_bot_msg)
