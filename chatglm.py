@@ -114,7 +114,7 @@ def send_msg(conversation_id, asker, msg):
     json_bot_msg = {
         "msgtype": "text",
         "text": {
-            "content": asker + " 你好!\r\n" + msg + "\r\n第 " + str(len(chat_holder[conversation_id]['history']))
+            "content": asker + " 你好!\r\n" + msg + "\r\n第 " + str(len(chat_holder[conversation_id]['history'])) + "轮conversation"
         }
     }
     url = 'https://oapi.dingtalk.com/robot/send?access_token=' + chat_holder[conversation_id]['dingToken']
